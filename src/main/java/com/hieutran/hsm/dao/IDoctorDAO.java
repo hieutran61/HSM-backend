@@ -13,6 +13,6 @@ import java.util.List;
  * @author Hieu Tran
  */
 public interface IDoctorDAO {
-    public List<Doctor> list();
-
+    public List<Doctor> getAllDoctors();
+    public Doctor addDoctor(Doctor doctor);
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * @author Hieu Tran
@@ -25,7 +26,7 @@ public class DoctorDAOImpl implements IDoctorDAO{
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public List<Doctor> list() {
+    public List<Doctor> getAllDoctors() {
         String sql = "select * from Doctors";
         List<Doctor> list = jdbcTemplate.query(sql, new RowMapper<Doctor>() {
             public Doctor mapRow(ResultSet rs, int rowNum) throws SQLException{
@@ -35,6 +36,7 @@ public class DoctorDAOImpl implements IDoctorDAO{
                 doctor.setUsername(rs.getString("username"));
                 doctor.setPassword(rs.getString("password"));
                 doctor.setDepartment(rs.getString("department"));
+                doctor.setSpecialization(rs.getString("specialization"));
                 doctor.setPhone(rs.getString("phone"));
                 doctor.setAddress(rs.getString("address"));
                 doctor.setEmail(rs.getString("email"));
@@ -45,6 +47,18 @@ public class DoctorDAOImpl implements IDoctorDAO{
         });
         
         return list;
+    }
+
+    @Override
+    public Doctor addDoctor(Doctor doctor) {
+        System.out.println(doctor.getName());
+        String sql = "INSERT INTO Doctors VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//        Object[] doc = {doctor.getName(), doctor.getUsername(), doctor.getPassword(), doctor.getDepartment(), doctor.getSpecialization(),
+//                            doctor.getPhone(), doctor.getAddress(), doctor.getEmail(), doctor.isIsActive(), doctor.getModifyTime()};
+        jdbcTemplate.update(sql, doctor.getName(), doctor.getUsername(), doctor.getPassword(), doctor.getDepartment(), doctor.getSpecialization(),
+                            doctor.getPhone(), doctor.getAddress(), doctor.getEmail(), doctor.isIsActive(), doctor.getModifyTime());
+        
+        return doctor;
     }
     
 
