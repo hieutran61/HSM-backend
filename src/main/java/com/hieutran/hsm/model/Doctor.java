@@ -4,9 +4,9 @@
  */
 package com.hieutran.hsm.model;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Doctor {
     private int docId;
@@ -18,13 +18,13 @@ public class Doctor {
     private String phone;
     private String address;
     private String email;
-    private Timestamp modifyTime;
+    private Date modifyTime;
     private boolean isActive;
 
     public Doctor() {
     }
 
-    public Doctor(int docId, String name, String username, String password, String department, String specialization, String phone, String address, String email, Timestamp modifyTime, boolean isActive) {
+    public Doctor(int docId, String name, String username, String password, String department, String specialization, String phone, String address, String email, Date modifyTime, boolean isActive) {
         this.docId = docId;
         this.name = name;
         this.username = username;
@@ -110,11 +110,11 @@ public class Doctor {
         this.email = email;
     }
 
-    public Timestamp getModifyTime() {
+    public Date getModifyTime() {
         return modifyTime;
     }
 
-    public void setModifyTime(Timestamp modifyTime) {
+    public void setModifyTime(Date modifyTime) {
         this.modifyTime = modifyTime;
     }
 

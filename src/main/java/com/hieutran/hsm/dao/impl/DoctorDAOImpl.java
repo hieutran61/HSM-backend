@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * @author Hieu Tran
@@ -27,7 +26,7 @@ public class DoctorDAOImpl implements IDoctorDAO{
 
     @Override
     public List<Doctor> getAllDoctors() {
-        String sql = "select * from Doctors";
+        String sql = "select * from Doctors where isActive=1";
         List<Doctor> list = jdbcTemplate.query(sql, new RowMapper<Doctor>() {
             public Doctor mapRow(ResultSet rs, int rowNum) throws SQLException{
                 Doctor doctor = new Doctor();
@@ -51,7 +50,6 @@ public class DoctorDAOImpl implements IDoctorDAO{
 
     @Override
     public Doctor addDoctor(Doctor doctor) {
-        System.out.println(doctor.getName());
         String sql = "INSERT INTO Doctors VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 //        Object[] doc = {doctor.getName(), doctor.getUsername(), doctor.getPassword(), doctor.getDepartment(), doctor.getSpecialization(),
 //                            doctor.getPhone(), doctor.getAddress(), doctor.getEmail(), doctor.isIsActive(), doctor.getModifyTime()};
