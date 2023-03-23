@@ -15,4 +15,6 @@ import java.util.List;
 public interface IDoctorDAO {
     public List<Doctor> getAllDoctors();
     public Doctor addDoctor(Doctor doctor);
+    public List<Doctor> getFilterDoctors(int pageSize, int pageNum, String searchText, String orderColumn, String sort);
+    public int countFilterDoctors(String searchText);
 }

@@ -23,13 +23,11 @@ import org.springframework.stereotype.Repository;
 public class DoctorDAOImpl implements IDoctorDAO{
     @Autowired
     JdbcTemplate jdbcTemplate;
-
-    @Override
-    public List<Doctor> getAllDoctors() {
-        String sql = "select * from Doctors where isActive=1";
-        List<Doctor> list = jdbcTemplate.query(sql, new RowMapper<Doctor>() {
-            public Doctor mapRow(ResultSet rs, int rowNum) throws SQLException{
-                Doctor doctor = new Doctor();
+    
+    private static final class DoctorMapper implements RowMapper<Doctor>{
+        @Override
+        public Doctor mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Doctor doctor = new Doctor();
                 doctor.setDocId(rs.getInt("docId"));
                 doctor.setName(rs.getString("name"));
                 doctor.setUsername(rs.getString("username"));
@@ -42,8 +40,13 @@ public class DoctorDAOImpl implements IDoctorDAO{
                 doctor.setIsActive(rs.getBoolean("isActive"));
                 doctor.setModifyTime(rs.getTimestamp("modifyTime"));
                 return doctor;
-            }
-        });
+        }
+    }
+
+    @Override
+    public List<Doctor> getAllDoctors() {
+        String sql = "select * from Doctors where isActive=1";
+        List<Doctor> list = jdbcTemplate.query(sql, new DoctorMapper());
         
         return list;
     }
@@ -58,6 +61,41 @@ public class DoctorDAOImpl implements IDoctorDAO{
         
         return doctor;
     }
+
+    @Override
+    public List<Doctor> getFilterDoctors(int pageSize, int pageNum, String searchText, String orderColumn, String sort) {
+        String sql = "select * from Doctors where [name] like '%" + searchText + "%'\n" +
+"						or [username] like '%" + searchText + "%'\n" +
+"						or [department] like '%" + searchText + "%'\n" +
+"						or [specialization] like '%" + searchText + "%'\n" +
+"						or [phone] like '%" + searchText + "%'\n" +
+"						or [address] like '%" + searchText + "%'\n" +
+"						or [email] like '%" + searchText + "%'\n" +
+"						and [isActive]=1\n" +
+"                       order by " + orderColumn + " " + sort + "  offset " + ((pageNum-1)*pageSize) +" rows fetch next " + pageSize + " rows only";
+        
+        List<Doctor> list = jdbcTemplate.query(sql, new DoctorMapper());
+
+        return list;
+    }
+
+    @Override
+    public int countFilterDoctors(String searchText) {
+        String sql = "select count(docId) as totalRecord \n" +
+                    "from Doctors \n" +
+                    "where [name] like '%" + searchText + "%'\n" +
+"                   or [username] like '%" + searchText + "%'\n" +
+"                   or [department] like '%" + searchText + "%'\n" +
+"                   or [specialization] like '%" + searchText + "%'\n" +
+"                   or [phone] like '%" + searchText + "%'\n" +
+"                   or [address] like '%" + searchText + "%'\n" +
+"                   or [email] like '%" + searchText + "%'\n" +
+"                   and [isActive]=1\n";
+        
+        int totalRecord = jdbcTemplate.queryForObject(sql, Integer.class);
+        return totalRecord;
+    }
+
     
 
 }
