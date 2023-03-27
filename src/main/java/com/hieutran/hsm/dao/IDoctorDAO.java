@@ -17,4 +17,6 @@ public interface IDoctorDAO {
     public Doctor addDoctor(Doctor doctor);
     public List<Doctor> getFilterDoctors(int pageSize, int pageNum, String searchText, String orderColumn, String sort);
     public int countFilterDoctors(String searchText);
+    public boolean deleteDoctor(int doctorId);
+    public Doctor getDoctorById(int doctorId);
 }

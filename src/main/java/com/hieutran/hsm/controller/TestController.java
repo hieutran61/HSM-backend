@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**         @author Hieu Tran           */
 @Controller
@@ -19,12 +20,12 @@ public class TestController {
     @Autowired
     IDoctorDAO doctorDAO;
     
-    @RequestMapping("/get-doctor")
-    public ResponseEntity<List<Doctor>> getDoctor(){
-        List<Doctor> list = doctorDAO.getAllDoctors();
+    @RequestMapping("/test")
+    public ResponseEntity test(@RequestParam int id){
+        Doctor doctor = doctorDAO.getDoctorById(id);
         System.out.println("getAll ne`````````````````");
         
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(doctor);
     }
 
 }

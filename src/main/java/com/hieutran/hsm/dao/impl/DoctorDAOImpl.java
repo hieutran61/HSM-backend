@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -64,13 +65,13 @@ public class DoctorDAOImpl implements IDoctorDAO{
 
     @Override
     public List<Doctor> getFilterDoctors(int pageSize, int pageNum, String searchText, String orderColumn, String sort) {
-        String sql = "select * from Doctors where [name] like '%" + searchText + "%'\n" +
+        String sql = "select * from Doctors where ([name] like '%" + searchText + "%'\n" +
 "						or [username] like '%" + searchText + "%'\n" +
 "						or [department] like '%" + searchText + "%'\n" +
 "						or [specialization] like '%" + searchText + "%'\n" +
 "						or [phone] like '%" + searchText + "%'\n" +
 "						or [address] like '%" + searchText + "%'\n" +
-"						or [email] like '%" + searchText + "%'\n" +
+"						or [email] like '%" + searchText + "%')\n" +
 "						and [isActive]=1\n" +
 "                       order by " + orderColumn + " " + sort + "  offset " + ((pageNum-1)*pageSize) +" rows fetch next " + pageSize + " rows only";
         
@@ -83,17 +84,39 @@ public class DoctorDAOImpl implements IDoctorDAO{
     public int countFilterDoctors(String searchText) {
         String sql = "select count(docId) as totalRecord \n" +
                     "from Doctors \n" +
-                    "where [name] like '%" + searchText + "%'\n" +
+                    "where ([name] like '%" + searchText + "%'\n" +
 "                   or [username] like '%" + searchText + "%'\n" +
 "                   or [department] like '%" + searchText + "%'\n" +
 "                   or [specialization] like '%" + searchText + "%'\n" +
 "                   or [phone] like '%" + searchText + "%'\n" +
 "                   or [address] like '%" + searchText + "%'\n" +
-"                   or [email] like '%" + searchText + "%'\n" +
+"                   or [email] like '%" + searchText + "%')\n" +
 "                   and [isActive]=1\n";
         
         int totalRecord = jdbcTemplate.queryForObject(sql, Integer.class);
         return totalRecord;
+    }
+    
+    @Override
+    public boolean deleteDoctor(int doctorId) {
+        
+        String sql = "UPDATE Doctors\n" +
+"                    SET isActive = 0\n" +
+"                    WHERE [docId] = ?;";
+        jdbcTemplate.update(sql, doctorId);
+        return true;
+    }
+    
+    @Override
+    public Doctor getDoctorById(int doctorId) {
+        try {
+            String sql = "select * from Doctors where [docId] = ?";
+            Doctor doc = jdbcTemplate.queryForObject(sql, new DoctorMapper(), doctorId);
+            return doc;
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+        
     }
 
     
