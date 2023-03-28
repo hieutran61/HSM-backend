@@ -53,13 +53,40 @@ public class DoctorController {
         return ResponseEntity.ok().body(doctorDAO.addDoctor(doctor));
     }
     
-    @GetMapping("list-doctor/delete/{id}")
+    @GetMapping("/list-doctor/delete/{id}")
     public ResponseEntity<Doctor> deleteDoctor(@PathVariable int id)
     {
-        if (doctorDAO.getDoctorById(id)==null) return new ResponseEntity(HttpStatus.NOT_FOUND);
+        if (doctorDAO.getDoctor(id)==null) return new ResponseEntity(HttpStatus.NOT_FOUND);
         doctorDAO.deleteDoctor(id);
         
-        return ResponseEntity.ok(doctorDAO.getDoctorById(id));   
+        return ResponseEntity.ok(doctorDAO.getDoctor(id));   
     }
-
+    
+    @GetMapping("/list-doctor/")
+    public ResponseEntity<Object> getUserByUsername(@RequestParam String username){
+        Doctor doc = doctorDAO.getDoctor(username);
+        if (doc == null) return new ResponseEntity(HttpStatus.NOT_FOUND);
+     
+        return ResponseEntity.ok(doc);
+    }
+    
+    @GetMapping("/list-doctor/{id}")
+    public ResponseEntity<Object> getDoctorById(@PathVariable int id){
+        Doctor doc = doctorDAO.getDoctor(id);
+        if (doc == null) return new ResponseEntity(HttpStatus.NOT_FOUND);
+     
+        return ResponseEntity.ok(doc);
+    }
+    
+    @PostMapping(value = "/list-doctor/update", headers = "Accept=application/json")
+    public ResponseEntity updateDoctor(@RequestBody Doctor updatedDoctor){
+        System.out.println("BEGIN updateDoctor");
+        Doctor doc = doctorDAO.getDoctor(updatedDoctor.getDocId());
+        if (doc == null) return new ResponseEntity(HttpStatus.NOT_FOUND);
+        doctorDAO.updateDoctor(updatedDoctor);
+    
+        System.out.println("updated done");
+        return ResponseEntity.ok(null);
+    }
+    
 }

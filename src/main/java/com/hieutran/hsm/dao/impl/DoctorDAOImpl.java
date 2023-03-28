@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
 public class DoctorDAOImpl implements IDoctorDAO{
     @Autowired
     JdbcTemplate jdbcTemplate;
-    
+
     private static final class DoctorMapper implements RowMapper<Doctor>{
         @Override
         public Doctor mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -108,16 +108,38 @@ public class DoctorDAOImpl implements IDoctorDAO{
     }
     
     @Override
-    public Doctor getDoctorById(int doctorId) {
+    public Doctor getDoctor(int doctorId) {
         try {
-            String sql = "select * from Doctors where [docId] = ?";
+            String sql = "select * from Doctors where [docId] = ? and isActive = 1";
             Doctor doc = jdbcTemplate.queryForObject(sql, new DoctorMapper(), doctorId);
             return doc;
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
-        
     }
+    
+    @Override
+    public Doctor getDoctor(String username) {
+        try {
+            String sql = "select * from Doctors where [username] = ? and isActive = 1";
+            Doctor doc = jdbcTemplate.queryForObject(sql, new DoctorMapper(), username);
+            return doc;
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+    
+    @Override
+    public void updateDoctor(Doctor doctor) {
+        String sql = "UPDATE Doctors\n" +
+"                   SET [name] = ?, [username] = ?, [password] = ?,\n" +
+"                   [department] = ?, [specialization] = ?, [phone] = ?,\n" +
+"                   [address] = ?, [email] = ?, [modifyTime] = ?\n" +
+"                   WHERE [docId]= ? ";
+        jdbcTemplate.update(sql, doctor.getName(), doctor.getUsername(), doctor.getPassword(), doctor.getDepartment(), doctor.getSpecialization(),
+                            doctor.getPhone(), doctor.getAddress(), doctor.getEmail(), doctor.getModifyTime(), doctor.getDocId());
+    }
+  
 
     
 
