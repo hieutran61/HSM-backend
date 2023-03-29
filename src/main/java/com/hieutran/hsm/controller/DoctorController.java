@@ -89,4 +89,12 @@ public class DoctorController {
         return ResponseEntity.ok(null);
     }
     
+    @PostMapping(value = "admin/add-doctor-excel", headers = "Accept=application/json")
+    public ResponseEntity<Doctor> addDoctorFromExcel(@RequestBody Doctor[] excelData){
+        for (Doctor doc: excelData){
+            doctorDAO.addDoctor(doc);
+        }
+        return ResponseEntity.ok().body(null);
+    }
+    
 }
