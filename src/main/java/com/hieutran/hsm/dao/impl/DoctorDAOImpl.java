@@ -139,6 +139,21 @@ public class DoctorDAOImpl implements IDoctorDAO{
         jdbcTemplate.update(sql, doctor.getName(), doctor.getUsername(), doctor.getPassword(), doctor.getDepartment(), doctor.getSpecialization(),
                             doctor.getPhone(), doctor.getAddress(), doctor.getEmail(), doctor.getModifyTime(), doctor.getDocId());
     }
+    
+    @Override
+    public List<Doctor> getListBySearch(String searchText){
+        String sql = "select * from Doctors where ([name] like '%" + searchText + "%'\n" +
+"						or [username] like '%" + searchText + "%'\n" +
+"						or [department] like '%" + searchText + "%'\n" +
+"						or [specialization] like '%" + searchText + "%'\n" +
+"						or [phone] like '%" + searchText + "%'\n" +
+"						or [address] like '%" + searchText + "%'\n" +
+"						or [email] like '%" + searchText + "%')\n" +
+"						and [isActive]=1";
+        List<Doctor> list = jdbcTemplate.query(sql, new DoctorMapper());
+
+        return list;
+    }
   
 
     

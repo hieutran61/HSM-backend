@@ -65,8 +65,7 @@ public class DoctorController {
     @GetMapping("/list-doctor/")
     public ResponseEntity<Object> getUserByUsername(@RequestParam String username){
         Doctor doc = doctorDAO.getDoctor(username);
-        if (doc == null) return new ResponseEntity(HttpStatus.NOT_FOUND);
-     
+        
         return ResponseEntity.ok(doc);
     }
     
@@ -95,6 +94,16 @@ public class DoctorController {
             doctorDAO.addDoctor(doc);
         }
         return ResponseEntity.ok().body(null);
+    }
+    
+    @GetMapping("list-doctor-by-search/")
+    public @ResponseBody ResponseEntity getListBySearch(@RequestParam String searchText)
+    {
+        List<Doctor> list = doctorDAO.getListBySearch(searchText);
+        
+        System.out.println((list.size()));
+        
+        return ResponseEntity.ok(list);
     }
     
 }
