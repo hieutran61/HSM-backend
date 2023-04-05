@@ -141,6 +141,17 @@ public class DoctorDAOImpl implements IDoctorDAO{
     }
     
     @Override
+    public void updateDoctorByUsername(Doctor doctor) {
+        String sql = "UPDATE Doctors\n" +
+"                   SET [name] = ?, [password] = ?,\n" +
+"                   [department] = ?, [specialization] = ?, [phone] = ?,\n" +
+"                   [address] = ?, [email] = ?, [modifyTime] = ?\n" +
+"                   WHERE [username]= ? ";
+        jdbcTemplate.update(sql, doctor.getName(), doctor.getPassword(), doctor.getDepartment(), doctor.getSpecialization(),
+                            doctor.getPhone(), doctor.getAddress(), doctor.getEmail(), doctor.getModifyTime(), doctor.getUsername());
+    }
+    
+    @Override
     public List<Doctor> getListBySearch(String searchText){
         String sql = "select * from Doctors where ([name] like '%" + searchText + "%'\n" +
 "						or [username] like '%" + searchText + "%'\n" +

@@ -22,5 +22,6 @@ public interface IDoctorDAO {
     public Doctor getDoctor(int doctorId);
     public Doctor getDoctor(String username);
     public void updateDoctor(Doctor doctor);
+    public void updateDoctorByUsername(Doctor doctor);
     
 }
